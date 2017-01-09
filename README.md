@@ -1,2 +1,3 @@
 # LoveProjects
-项目仓库
+this is a project which to  build a ssm maven project ;
+
