@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 Manifest-Version: 1.0
 Built-By: Administrator
 Build-Jdk: 1.6.0_13
 Created-By: Maven Integration for Eclipse
 
-=======
-Manifest-Version: 1.0
-Built-By: Pierre
-Build-Jdk: 1.6.0_13
-Created-By: Maven Integration for Eclipse
-
->>>>>>> yupan
