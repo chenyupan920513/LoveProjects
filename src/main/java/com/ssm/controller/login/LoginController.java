@@ -40,11 +40,7 @@ public class LoginController {
 			return "index";
 		}
 		User user=null;
-		try {
 			user = loginService.getUser(userName, StringUtils.toMD5(password));
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("MD5加密失败！"+e.getMessage());
-		}
 		if (user == null) {
 			return "login";
 		} else {

@@ -37,12 +37,7 @@ public class LoginService {
 		boolean flag = true;
 		if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password))
 			flag = false;
-		try {
 			password = com.ssm.utils.StringUtils.toMD5(password);
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("Md5加密失败" + e.getMessage());
-			flag = false;
-		}
 		User user = userDao.login(userName, password);
 		if (user != null)
 			flag = true;
