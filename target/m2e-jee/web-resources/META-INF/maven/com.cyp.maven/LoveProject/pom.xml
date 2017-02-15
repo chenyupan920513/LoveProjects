@@ -15,6 +15,9 @@
     <!-- log4j日志文件管理包版本 -->
     <slf4j.version>1.7.7</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
+     <project.build.sourceEncoding>
+             UTF-8
+   	 </project.build.sourceEncoding>
 </properties>
   <dependencies>
     <dependency>
@@ -153,7 +156,14 @@
         <artifactId>commons-codec</artifactId>
         <version>1.9</version>
     </dependency>
+<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+	<dependency>
+	    <groupId>com.google.guava</groupId>
+	    <artifactId>guava</artifactId>
+	    <version>21.0</version>
+	</dependency>
 </dependencies>
+
   <build>
     <finalName>LoveProject</finalName>
     <plugins>
@@ -165,6 +175,9 @@
               <source>1.7</source>
               <target>1.7</target>
               <encoding>UTF-8</encoding>
+              <url>http://localhost:8080/manager/text</url> <!-- tomcat管理路径 -->
+			  <server>Tomcat7</server> <!-- 与settings.xml文件中Server的id相同 -->
+			  <path>/web</path> <!-- 应用的部署位置 -->
           </configuration>
       </plugin>
   </plugins>
