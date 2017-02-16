@@ -44,12 +44,7 @@ public class TestMyBatis {
 	public void testAddUser() {
 		User user = new User();
 		user.setBirthday(new Date());
-		try {
 			user.setPassword(StringUtils.toMD5("chenyupan"));
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		user.setPhone("18817573489");
 		user.setSex(SEX.女);
 		user.createKey();
