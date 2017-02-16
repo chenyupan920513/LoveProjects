@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.UserDao" >
+  <resultMap id="BaseResultMap" type="com.ssm.pojo.User" >
+    <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="TINYINT" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler" />
+    <result column="PHONE" property="phone" jdbcType="INTEGER" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+   	 USER_ID, USER_NAME, PASSWORD, SEX,PHONE,BIRTHDAY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where USER_ID = #{userId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where USER_ID = #{userId}
+  </delete>
+  <insert id="insert" parameterType="com.ssm.pojo.User" >
+    insert into user(USER_ID, USER_NAME, PASSWORD,SEX,PHONE,BIRTHDAY )
+    values (#{userId}, #{userName}, #{password}, #{sex,jdbcType=TINYINT,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}, #{phone}, #{birthday})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ssm.pojo.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="userName != null" >
+        USER_NAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="phone != null" >
+        PHONE,
+      </if>
+      <if test="birthday != null" >
+        BIRTHDAY
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId},
+      </if>
+      <if test="userName != null" >
+        #{userName},
+      </if>
+      <if test="password != null" >
+        #{password},
+      </if>
+      <if test="sex != null" >
+        #{sex},
+      </if>
+      <if test="phone != null" >
+        #{phone},
+      </if>
+      <if test="birthday != null" >
+        #{birthday}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ssm.pojo.User" >
+    update user
+    <set >
+      <if test="userName != null" >
+        USER_NAME = #{userName},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password},
+      </if>
+      <if test="sex != null" >
+        SEX = #{sex,jdbcType=TINYINT,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler },
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone},
+      </if>
+      <if test="birthday != null" >
+        BIRTHDAY = #{birthday},
+      </if>
+    </set>
+    where USER_ID = #{userId}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ssm.pojo.User" >
+    update user
+    set USER_NAME = #{userName}, PASSWORD = #{password},SEX=#{sex,jdbcType=TINYINT,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler },PHONE=#{phone},BIRTHDAY=#{birthday}
+    where USER_ID = #{userId}
+  </update>
+  <select id="login"   resultMap="BaseResultMap">
+  		select 
+  		<include refid="Base_Column_List" />
+  		 from user where  USER_NAME = #{param1} and PASSWORD = #{param2} limit 1
+  </select>
+</mapper>
