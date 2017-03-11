@@ -1,3 +1,1 @@
-# LoveProjects
-this is a project which to  build a ssm maven project ;
-
+# blog我的博客系统
