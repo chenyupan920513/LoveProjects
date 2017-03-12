@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script src="js/vue.js" type="application/javascript"></script>
+    <script src="js/vue-resource.js" type="application/javascript"></script>
+</head>
+<form id = "iiid"  method="post">
+        用户名： <input   v-model="userName"/></br>
+        密码：<input v-model="password"/></br>
+    <input type="button" value="提交" v-on:click="submit">
+    <div>{{userName}}</div>
+</form>
+
+
+</body>
+
+<script>
+
+    /*var data = {
+        userName: 'chenyupan',
+        password:'chenyupan'
+    }*/
+    var vm = new Vue({
+        el: '#iiid',
+
+        data:function () {
+          return{
+              userName: 'chenyupan',
+              password:'chenyupan'
+          }
+
+        },
+        ready:function(){
+                console.log(111111)
+        },
+        methods:{
+
+
+            submit:function () {
+                var params = {
+                    userName:this.userName,
+                    password:this.password
+                };
+                console.log(params)
+                Vue.http.post("http://localhost:8080/blog/login",params).then(function(res){
+                    console.log(res)
+                });
+
+            }
+        }
+    })
+</script>
+</html>

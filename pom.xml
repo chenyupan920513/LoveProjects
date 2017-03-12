@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cyp.maven</groupId>
-  <artifactId>LoveProject</artifactId>
+  <artifactId>blog</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>LoveProject Maven Webapp</name>
+  <name>blog</name>
   <url>http://maven.apache.org</url>
   <properties>
     <!-- spring版本号 -->
@@ -15,6 +15,8 @@
     <!-- log4j日志文件管理包版本 -->
     <slf4j.version>1.7.7</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
+    <!--      redis 版本-->
+    <redis.version>2.9.0</redis.version>
      <project.build.sourceEncoding>
              UTF-8
    	 </project.build.sourceEncoding>
@@ -24,7 +26,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.11</version>
-        <!-- 表示开发的时候引入，发布的时候不会加载此包 -->
         <scope>test</scope>
     </dependency>
     <!-- spring核心包 -->
@@ -162,22 +163,33 @@
 	    <artifactId>guava</artifactId>
 	    <version>21.0</version>
 	</dependency>
-</dependencies>
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-redis</artifactId>
+        <version>1.6.1.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>2.7.3</version>
+    </dependency>
+
+  </dependencies>
 
   <build>
-    <finalName>LoveProject</finalName>
+    <finalName>blog</finalName>
     <plugins>
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.6.0</version>
           <configuration>
-              <source>1.7</source>
-              <target>1.7</target>
+              <source>1.8</source>
+              <target>1.8</target>
               <encoding>UTF-8</encoding>
-              <url>http://localhost:8080/manager/text</url> <!-- tomcat管理路径 -->
-			  <server>Tomcat7</server> <!-- 与settings.xml文件中Server的id相同 -->
-			  <path>/web</path> <!-- 应用的部署位置 -->
+<!--              <url>http://localhost:8080/manager/text</url> &lt;!&ndash; tomcat管理路径 &ndash;&gt;
+			  <server>Tomcat7</server> &lt;!&ndash; 与settings.xml文件中Server的id相同 &ndash;&gt;
+			  <path>/web</path> &lt;!&ndash; 应用的部署位置 &ndash;&gt;-->
           </configuration>
       </plugin>
   </plugins>

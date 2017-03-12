@@ -1,6 +1,10 @@
 package com.ssm.dao;
 
 import com.ssm.pojo.User;
+import org.springframework.stereotype.Repository;
+
+import javax.annotation.Resource;
+import javax.annotation.Resources;
 
 public interface UserDao {
 

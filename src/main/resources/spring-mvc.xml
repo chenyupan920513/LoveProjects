@@ -10,6 +10,21 @@
                             http://www.springframework.org/schema/mvc  
                             http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
+
+    <!-- 引入配置文件 -->
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <!-- 这里支持多种寻址方式：classpath和file -->
+                <value>classpath:jdbc.properties</value>
+                <!-- 推荐使用file的方式引入，这样可以将配置和代码分离 -->
+                <value>classpath:redis.properties</value>
+                <value>classpath:log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+
     <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
     <bean id="mappingJacksonHttpMessageConverter"
         class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
@@ -31,15 +46,14 @@
     </bean>
 
     <!-- 对静态资源的访问 -->
-    <mvc:resources mapping="/js/**" location="/WEB-INF/js/" /> 
+    <mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
     <mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
     <mvc:resources mapping="/img/**" location="/WEB-INF/img/" />
-    <mvc:resources mapping="/theme/**" location="/WEB-INF/theme/" />
     <mvc:resources mapping="/*.html" location="/WEB-INF/html/" />
     <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/" />
 
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
-    <context:component-scan base-package="com.ssm.controller" />
+    <context:component-scan base-package="com.ssm" />
 
     <!-- 添加注解驱动 -->
     <mvc:annotation-driven enable-matrix-variables="true" />
@@ -47,13 +61,51 @@
 
     <mvc:default-servlet-handler />
 
+    <!--    配置数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${driver}" />
+        <property name="url" value="${url}" />
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" />
+        <!-- 初始化连接大小 -->
+        <property name="initialSize" value="${initialSize}"></property>
+        <!-- 连接池最大数量 -->
+        <property name="maxActive" value="${maxActive}"></property>
+        <!-- 连接池最大空闲 -->
+        <property name="maxIdle" value="${maxIdle}"></property>
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle" value="${minIdle}"></property>
+        <!-- 获取连接最大等待时间 -->
+        <property name="maxWait" value="${maxWait}"></property>
+    </bean>
+
+    <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描mapping.xml文件 -->
+        <property name="mapperLocations" value="classpath*:com/ssm/mapping/*.xml"></property>
+    </bean>
+
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ssm.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+    </bean>
+
+    <!--引入redis配置文件-->
+    <import resource="classpath*:spring-redis.xml" />
+
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
-        <property name="prefix" value="/WEB-INF/jsp/" />
-        <property name="suffix" value=".jsp" />
+        <property name="prefix" value="/WEB-INF/html/" />
+        <property name="suffix" value=".html" />
     </bean>
+
+
+
 
     <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
     <bean id="multipartResolver"
@@ -65,4 +117,22 @@
         <!-- 内存中的最大值 -->
         <property name="maxInMemorySize" value="40960" />
     </bean>
+
+
+
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--
+                /**的意思是所有文件夹及里面的子文件夹
+                /*是所有文件夹，不含子文件夹
+                /是web项目的根目录
+              -->
+            <mvc:mapping path="/**" />
+            <!-- 需排除拦截的地址 -->
+            <!--  <mvc:exclude-mapping path="/userController/login"/>  -->
+            <bean id="commonInterceptor" class="com.ssm.filter.LoginFilter"></bean> <!--这个类就是我们自定义的Interceptor -->
+        </mvc:interceptor>
+        <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法  -->
+    </mvc:interceptors>
 </beans>

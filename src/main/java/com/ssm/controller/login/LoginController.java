@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.ssm.utils.RedisUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ssm.pojo.User;
 import com.ssm.service.LoginService;
 import com.ssm.utils.StringUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class LoginController {
@@ -22,17 +24,34 @@ public class LoginController {
 
 	@Resource
 	private LoginService loginService;
-/**
- * 用户登录：若用户名为空，则返回error
- * @param request
- * @param userName
- * @param password
- * @param model
- * @return
- */
-	@RequestMapping("/login")
-	public String login(HttpServletRequest  request,String userName, String password,Model model) {
+	@Resource
+	private RedisUtils redisUtils;
+
+
+	/**
+	 *登录页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(HttpServletRequest  request) {
+		return "login";
+	}
+	/**
+	 * 用户登录：若用户名为空，则返回error
+	 * @param request
+	 * @param userName
+	 * @param password
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String loginPost(HttpServletRequest  request,String userName, String password,Model model) {
 		HttpSession session = request.getSession();
+
+		redisUtils.set("foo","bar");
+		System.out.print(redisUtils.get("foo"));
+
 		if(!session.isNew()&&session.getAttribute(userName)!=null){
 			User  user = (User)session.getAttribute(userName);
 			model.addAttribute(user);
@@ -54,4 +73,5 @@ public class LoginController {
 		}
 
 	}
+
 }
