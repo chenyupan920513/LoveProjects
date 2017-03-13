@@ -98,6 +98,6 @@
   <select id="login"   resultMap="BaseResultMap">
   		select 
   		<include refid="Base_Column_List" />
-  		 from user where  USER_NAME = #{param1} and PASSWORD = #{param2}
+  		 from user where  USER_NAME = #{param1} and PASSWORD = #{param2} limit 1
   </select>
 </mapper>
