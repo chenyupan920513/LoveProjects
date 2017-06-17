@@ -1,13 +1,14 @@
 package com.ssm.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.log4j.Logger;
-
 public class StringUtils {
-	private static Logger logger = Logger.getLogger(StringUtils.class);
+	private static final Logger logger = LogManager.getLogger(StringUtils.class.getName());
 
 	public static String toMD5(String str){
 			if(str ==null )

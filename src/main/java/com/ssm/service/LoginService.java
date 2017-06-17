@@ -1,16 +1,13 @@
 package com.ssm.service;
 
-import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-
-import javax.annotation.Resource;
-
-import org.apache.log4j.Logger;
+import com.ssm.dao.UserDao;
+import com.ssm.pojo.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.ssm.dao.UserDao;
-import com.ssm.pojo.User;
+import javax.annotation.Resource;
 
 @Service
 public class LoginService {
@@ -18,7 +15,7 @@ public class LoginService {
 	@Resource
 	private UserDao userDao;
 
-	private Logger logger = Logger.getLogger(LoginService.class);
+	private static final Logger logger = LogManager.getLogger(LoginService.class.getName());
 
 	public User getUser(String userName, String password) {
 		if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password))

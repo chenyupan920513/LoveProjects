@@ -1,14 +1,19 @@
 package com.ssm.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable{
 
 	private String userId;
 	private String userName;
 	private String password;
+	private String nickname;
+	private String email;
 	private SEX sex;
+	private Date registeredTime;
 	private String phone;
+	private Integer status;
 	private Date birthday;
 
 	public String getUserId() {
@@ -35,20 +40,36 @@ public class User {
 		this.password = password;
 	}
 
-	public void setSex(SEX sex) {
-		this.sex = sex;
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public SEX getSex() {
 		return sex;
 	}
 
-	public Date getBirthday() {
-		return birthday;
+	public void setSex(SEX sex) {
+		this.sex = sex;
 	}
 
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
+	public Date getRegisteredTime() {
+		return registeredTime;
+	}
+
+	public void setRegisteredTime(Date registeredTime) {
+		this.registeredTime = registeredTime;
 	}
 
 	public String getPhone() {
@@ -59,17 +80,35 @@ public class User {
 		this.phone = phone;
 	}
 
-	@Override
-	public String toString() {
-		return "[userId:" + userId + ",userName:" + userName + ",birthday:"
-				+ birthday + ",sex:" + sex + ",phone:" + phone + "]";
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void createKey() {
-		Long time = System.currentTimeMillis();
-		byte[] tt = new byte[4];
-		String id= time.toString() + tt.toString();
-		id=id.substring(id.length()-16, id.length());
-		this.userId=id;
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"userId='" + userId + '\'' +
+				", userName='" + userName + '\'' +
+				", password='" + password + '\'' +
+				", nickname='" + nickname + '\'' +
+				", email='" + email + '\'' +
+				", sex=" + sex +
+				", registeredTime=" + registeredTime +
+				", phone='" + phone + '\'' +
+				", status=" + status +
+				", birthday=" + birthday +
+				'}';
 	}
 }

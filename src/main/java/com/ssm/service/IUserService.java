@@ -2,7 +2,7 @@ package com.ssm.service;
 
 import com.ssm.pojo.User;
 
-public interface IUserService {
+public interface IUserService  {
 
 	public User getUserById(String userId);
 

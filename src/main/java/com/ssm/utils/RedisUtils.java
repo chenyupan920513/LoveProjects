@@ -1,123 +1,81 @@
 package com.ssm.utils;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import com.alibaba.fastjson.JSON;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import redis.clients.jedis.Jedis;
 
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import javax.json.Json;
+import javax.json.JsonArray;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * redis cache 工具类
  *
  */
-public final  class RedisUtils {
-	private Logger logger = Logger.getLogger(RedisUtils.class);
-	@Autowired
-	private RedisTemplate<Serializable, Object> redisTemplate;
+public final  class RedisUtils extends  RedisProvider{
 
-	/**
-	 * 批量删除对应的value
-	 *
-	 * @param keys
-	 */
-	public void remove(final String... keys) {
-		for (String key : keys) {
-			remove(key);
-		}
-	}
+    private static final Logger logger = LogManager.getLogger(RedisUtils.class.getName());
 
-	/**
-	 * 批量删除key
-	 *
-	 * @param pattern
-	 */
-	public void removePattern(final String pattern) {
-		Set<Serializable> keys = redisTemplate.keys(pattern);
-		if (keys.size() > 0)
-			redisTemplate.delete(keys);
-	}
+    public  static int  EXPIRE = 5000;
 
-	/**
-	 * 删除对应的value
-	 *
-	 * @param key
-	 */
-	public void remove(final String key) {
-		if (exists(key)) {
-			redisTemplate.delete(key);
-		}
-	}
 
-	/**
-	 * 判断缓存中是否有对应的value
-	 *
-	 * @param key
-	 * @return
-	 */
-	public boolean exists(final String key) {
-		return redisTemplate.hasKey(key);
-	}
+    /**
+     * Get the value of the specified key.
+     *
+     * @param key
+     * @return
+     */
+    public static String get(String key) {
+        Jedis jedis = getJedis();
+        String value = jedis.get(key);
+        close(jedis);
+        return  value;
+    }
 
-	/**
-	 * 读取缓存
-	 *
-	 * @param key
-	 * @return
-	 */
-	public Object get(final String key) {
-		Object result = null;
-		ValueOperations<Serializable, Object> operations = redisTemplate
-				.opsForValue();
-		result = operations.get(key);
-		return result;
-	}
+    /**
+     * Set the string value as value of the key. Default settings at save
+     * time(2000s)
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public static void set(String key, String value) {
+        Jedis jedis = getJedis();
+        jedis.setex(key, 2000, value);
+        close(jedis);
+    }
 
-	/**
-	 * 写入缓存
-	 *
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public boolean set(final String key, Object value) {
-		boolean result = false;
-		try {
-			ValueOperations<Serializable, Object> operations = redisTemplate
-					.opsForValue();
-			operations.set(key, value);
-			result = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+    /**
+     * 获取对象.
+     *
+     * @param key
+     * @return
+     */
+    public static  <T> T  get(String key,Class<T> clazz){
+        return JSON.parseObject(get(key),clazz);
+    }
 
-	/**
-	 * 写入缓存
-	 *
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public boolean set(final String key, Object value, Long expireTime) {
-		boolean result = false;
-		try {
-			ValueOperations<Serializable, Object> operations = redisTemplate
-					.opsForValue();
-			operations.set(key, value);
-			redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-			result = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
 
-	public void setRedisTemplate(
-			RedisTemplate<Serializable, Object> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
+
+    public static void set(String key, Object obj) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.set(key,JSON.toJSONString(obj));
+            jedis.expire(key, EXPIRE);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            close(jedis);
+        }
+    }
+
+
+
+
+
+
 }

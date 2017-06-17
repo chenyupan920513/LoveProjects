@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xsi:schemaLocation="http://www.springframework.org/schema/beans  
@@ -11,46 +11,26 @@
                             http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
 
-    <!-- 引入配置文件 -->
-    <bean id="propertyConfigurer"
-          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+
+    <!-- 将多个配置文件读取到容器中，交给Spring管理 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <!-- 这里支持多种寻址方式：classpath和file -->
                 <value>classpath:jdbc.properties</value>
-                <!-- 推荐使用file的方式引入，这样可以将配置和代码分离 -->
                 <value>classpath:redis.properties</value>
-                <value>classpath:log4j.properties</value>
             </list>
         </property>
     </bean>
 
-    <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
-    <bean id="mappingJacksonHttpMessageConverter"
-        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-        <property name="supportedMediaTypes">
-            <list>
-                <value>text/html;charset=UTF-8</value>
-            </list>
-        </property>
-    </bean>
 
-    <!-- 启动SpringMVC的注解功能，完成请求和注解POJO的映射 -->
-    <bean
-        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <ref bean="mappingJacksonHttpMessageConverter" />    <!-- JSON转换器 -->
-            </list>
-        </property>
-    </bean>
+    <context:annotation-config/>
+
 
     <!-- 对静态资源的访问 -->
     <mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
-    <mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
     <mvc:resources mapping="/img/**" location="/WEB-INF/img/" />
     <mvc:resources mapping="/*.html" location="/WEB-INF/html/" />
-    <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/" />
 
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
     <context:component-scan base-package="com.ssm" />
@@ -58,6 +38,7 @@
     <!-- 添加注解驱动 -->
     <mvc:annotation-driven enable-matrix-variables="true" />
     <!-- 允许对静态资源文件的访问 -->
+
 
     <mvc:default-servlet-handler />
 
@@ -84,7 +65,8 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <!-- 自动扫描mapping.xml文件 -->
-        <property name="mapperLocations" value="classpath*:com/ssm/mapping/*.xml"></property>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:com/ssm/mapping/*.xml"></property>
     </bean>
 
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
@@ -93,14 +75,12 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
     </bean>
 
-    <!--引入redis配置文件-->
-    <import resource="classpath*:spring-redis.xml" />
 
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
-        <property name="prefix" value="/WEB-INF/html/" />
+        <property name="prefix" value="../WEB-INF/html/" />
         <property name="suffix" value=".html" />
     </bean>
 
@@ -117,8 +97,6 @@
         <!-- 内存中的最大值 -->
         <property name="maxInMemorySize" value="40960" />
     </bean>
-
-
 
 
     <mvc:interceptors>
