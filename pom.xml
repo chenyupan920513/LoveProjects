@@ -6,6 +6,7 @@
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>blog</name>
+
   <url>http://maven.apache.org</url>
   <properties>
     <!-- spring版本号 -->
@@ -173,7 +174,7 @@
   </dependencies>
 
   <build>
-    <finalName>ROOT</finalName>
+    <finalName>blog</finalName>
     <resources>
       <resource>
           <directory>src/main/java</directory>

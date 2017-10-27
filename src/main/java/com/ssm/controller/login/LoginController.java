@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class LoginController {
@@ -32,14 +33,13 @@ public class LoginController {
 
 	@RequestMapping(value = "/login",method = RequestMethod.POST)
 	@ResponseBody
-	public User loginPost(@Param(value = "userName") String userName,@Param(value = "password") String password) {
-
+	public User loginPost(@Param(value = "userName") String userName, @Param(value = "password") String password) {
 		User user = loginService.getUser(userName, password);
 		logger.info(user);
-		RedisUtils.set("u_"+user.getUserId(), user);
-		User tt = RedisUtils.get("u_"+user.getUserId(),User.class);
-		logger.error(tt);
-		return tt;
+//		RedisUtils.set("u_"+user.getUserId(), user);
+//		User tt = RedisUtils.get("u_"+user.getUserId(),User.class);
+		logger.error(user);
+		return user;
 	}
 
 }
